@@ -10,16 +10,22 @@ function isSolved(initial, sudoku) {
   for (let i = 0; i < 9; i++) {
     let [r,c] = [Math.floor(i/3)*3,(i%3)*3];
     if (
-        (sudoku[i].reduce((s,v)=>s.add(v),new Set()).size != 9) ||
-        (sudoku.reduce((s,v)=>s.add(v[i]),new Set()).size != 9) ||
-        (sudoku.slice(r,r+3).reduce((s,v)=>v.slice(c,c+3).reduce((s,v)=>s.add(v),s),new Set()).size != 9)
+        (sudoku[i].reduce((s,v)=>s.add(v),new Set()).size !== 9) ||
+        (sudoku.reduce((s,v)=>s.add(v[i]),new Set()).size !== 9) ||
+        (sudoku.slice(r,r+3).reduce((s,v)=>v.slice(c,c+3).reduce((s,v)=>s.add(v),s),new Set()).size !== 9)
       ) return false;
   }
-  return initial.every((row, rowIndex) => {
-    return row.every((num, colIndex) => {
-      return num === 0 || sudoku[rowIndex][colIndex] === num;
-    });
-  });
+  return initial.every(f);
+
+    function f(row, rowIndex) {
+
+        return row.every(fun);
+
+        function fun(num, colIndex) {
+
+            return (num === 0 || sudoku[rowIndex][colIndex] === num);
+        }
+    }
 }
 
 it('should solveSudoku 1', () => {
@@ -34,8 +40,13 @@ it('should solveSudoku 1', () => {
     [2, 8, 7, 4, 1, 9, 6, 3, 5],
     [3, 4, 5, 2, 8, 6, 1, 7, 9]
   ];
-  const copy = initial.map(r => [...r]);
-  assert.equal(isSolved(initial, solveSudoku(copy)), true);
+  const copy = initial.map(fu);
+
+    function fu(r) {
+        return [...r];
+    }
+
+    assert.equal(isSolved(initial, solveSudoku(copy)), true);
 });
 
 it('should solveSudoku 2', () => {
